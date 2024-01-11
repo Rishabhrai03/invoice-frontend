@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-const routes: Routes = [];
+import { GenerateInvoiceComponent } from './components/generate-invoice/generate-invoice.component';
+const routes: Routes = [
+  {
+    path: '',
+    component: GenerateInvoiceComponent
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

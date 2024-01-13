@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from "@angular/forms";
 import { GenerateInvoiceComponent } from './components/generate-invoice/generate-invoice.component';
+import { OnlyNumberDirective } from './directives/only-number.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GenerateInvoiceComponent
+    GenerateInvoiceComponent,
+    OnlyNumberDirective
   ],
   imports: [
     BrowserModule,

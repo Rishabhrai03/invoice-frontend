@@ -1,4 +1,4 @@
-<section class="container">
+<section class="container-fluid">
   <h1 class="text-center p-5">Shivam Decorators</h1>
   <section *ngIf="!products.length"
     class="bg-body-tertiary text-capitalize text-center h-25">
@@ -11,107 +11,153 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Description</th>
+          <th scope="col">Size</th>
           <th scope="col">Quantity</th>
-          <th scope="col">Cost ₹</th>
+          <th scope="col">Cost</th>
           <th scope="col">Total</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let product of products; let i = index;">
-          <td scope="col">
-            <button type="button" class="col btn btn-danger" (click)="removeProduct(i)">
-              <i class="bi bi-x"></i> {{ i }}
+          <td >
+            <button type="button"
+                    class="col btn btn-danger m-1"
+                    title="remove"
+                    (click)="removeProduct(i)">
+              <i class="bi bi-x"></i>
+              <!--{{ i }}-->
+            </button>
+            <button type="button"
+                    [hidden]="editingObject.index === i"
+                    class="col btn btn-secondary m-1"
+                    title="edit"
+                    (click)="editProduct(i, product)">
+              <i class="bi bi-pencil-square"></i>
+              <!--{{ i }}-->
             </button>
           </td>
-          <td scope="col">
+          <td>
             {{product.desc}}
           </td>
-          <td scope="col">
+          <td>
+            {{product.size}}
+          </td>
+          <td>
             {{product.qty}}
           </td>
-          <td scope="col">
-            {{product.cost}}
+          <td>
+            {{product.cost.toFixed(2)}}
           </td>
-          <td scope="col">
-            <span>₹ {{ product.total }}</span>
+          <td>
+            <span>₹ {{ product.total.toFixed(2) }}</span>
           </td>
         </tr>
       <tr>
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
         <td>Sub Total </td>
-        <td>₹ {{subTotal()}}</td>
+        <td>₹ {{subTotal().toFixed(2)}}</td>
       </tr>
         <tr>
           <td></td>
           <td></td>
           <td></td>
-          <td>GST(%): {{ gstPercentage }}</td>
-          <td>₹ {{ gstOnSubTotal() }}</td>
+          <td></td>
+          <td>GST: {{ gstPercentage.toFixed(2) }}%</td>
+          <td>₹ {{ gstOnSubTotal().toFixed(2) }}</td>
         </tr>
         <tr>
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
           <td>Grand Total:</td>
-          <td>₹ {{grandTotal()}}</td>
+          <td>₹ {{grandTotal().toFixed(2)}}</td>
         </tr>
       </tbody>
     </table>
   <hr>
 <!--  <section class="border-black">-->
       <form class="row text-center my-5" #productForm="ngForm">
-        <div class="col-md-4">
-        <label class="my-3" for="description">Description: </label>
-        <input
-          [ngClass]="{'border border-danger': description.invalid}"
-          class="mx-2"
-          id="description"
-          name="description"
-          #description="ngModel"
-          [(ngModel)]="oneProduct.desc"
-          type="text"
-          placeholder="Enter goods or services"
-          required
-        />
+        <div class="col-md-3">
+        <label class="my-3" for="description">Description:
+          <input
+            [ngClass]="{'border border-danger': description.invalid}"
+            class="mx-2"
+            id="description"
+            name="description"
+            #description="ngModel"
+            [(ngModel)]="oneProduct.desc"
+            type="text"
+            placeholder="Enter goods or services"
+            required
+          />
+        </label>
         </div>
-        <div class="col-md-4">
-        <label class="my-3" for="quantity">Quantity: </label>
-        <input
-          id="quantity"
-          class="mx-2"
-          name="qty"
-          [(ngModel)]="oneProduct.qty"
-          type="number"
-          placeholder="Quantity"
-          min="0"
-        />
+        <div class="col-md-3">
+        <label class="my-3" for="size">Size:
+          <input
+            class="mx-2 border"
+            id="size"
+            name="size"
+            [(ngModel)]="oneProduct.size"
+            type="text"
+            placeholder="size"
+          />
+        </label>
         </div>
-        <div class="col-md-4">
-        <label class="my-3" for="cost">Cost: </label>
-        <input
-          id="cost"
-          class="mx-2"
-          name="cost"
-          [(ngModel)]="oneProduct.cost"
-          type="number"
-          placeholder="Amount in ₹"
-          min="0"
-        />
+        <div class="col-md-3">
+        <label class="my-3" for="quantity">Quantity:
+          <input
+            id="quantity"
+            class="mx-2 border"
+            name="qty"
+            [(ngModel)]="oneProduct.qty"
+            type="number"
+            placeholder="Quantity"
+            min="0"
+            appOnlyNumber
+          />
+        </label>
+        </div>
+        <div class="col-md-3">
+        <label class="my-3" for="cost">Cost:
+          <input
+            id="cost"
+            class="mx-2 border"
+            name="cost"
+            [(ngModel)]="oneProduct.cost"
+            type="number"
+            placeholder="Amount in ₹"
+            min="0"
+            appOnlyNumber
+          />
+        </label>
         </div>
       </form>
     <div class="my-5 row col-lg-12">
       <span class="col-md-3"></span>
       <button (click)="addProduct()"
-              [disabled]="!oneProduct.desc"
+              [disabled]="!oneProduct.desc || !oneProduct.qty"
+              *ngIf="!editingObject.isEditing"
               type="button"
-              class="col-md-3 btn btn-primary">
+              title="Add product"
+              class="col-md-3 btn btn-primary m-2">
         <i class="bi bi-plus-lg"></i> Add
       </button>
+      <button (click)="saveProduct()"
+              *ngIf="editingObject.isEditing"
+              type="button"
+              title="Add product"
+              class="col-md-3 btn btn-success m-2">
+        <i class="bi bi-check-lg"></i> Save
+      </button>
       <button type="button"
+              title="Reset"
               *ngIf="products.length"
-              class="col-md-3 btn btn-danger"
+              class="col-md-3 btn btn-danger m-2"
               (click)="resetForm()">
         <i class="bi bi-x-lg"></i> Reset
       </button>
